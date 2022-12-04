@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { BoardService } from './board.service';
@@ -79,6 +80,7 @@ export class BoardController {
     description: 'The post is successfully deleted.',
   })
   @Delete(':id')
+  @HttpCode(204)
   remove(@Param('id') id: string) {
     return this.boardService.remove(+id);
   }
