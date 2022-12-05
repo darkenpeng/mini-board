@@ -9,14 +9,14 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { BoardService } from './board.service';
-import { CreateBoardDto } from './dto/create-board.dto';
-import { UpdateBoardDto } from './dto/update-board.dto';
+import { PostService } from './post.service';
+import { CreatePostDto } from './dto/create-post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
 
-@ApiTags('board')
-@Controller('board')
-export class BoardController {
-  constructor(private readonly boardService: BoardService) {}
+@ApiTags('post')
+@Controller('post')
+export class PostController {
+  constructor(private readonly postService: PostService) {}
 
   @Post()
   @ApiOperation({
@@ -28,8 +28,8 @@ export class BoardController {
     description: 'The post has been successfully created.',
   })
   @ApiResponse({ status: 401, description: 'Bad Request.' })
-  async create(@Body() createBoardDto: CreateBoardDto) {
-    this.boardService.create(createBoardDto);
+  async create(@Body() createPostDto: CreatePostDto) {
+    this.postService.create(createPostDto);
   }
 
   @Get()
@@ -41,11 +41,11 @@ export class BoardController {
     status: 200,
     description: 'Posts are successfully gotten.',
   })
-  findAll() {
-    return this.boardService.findAll();
+  async getAll() {
+    return this.postService.getAll();
   }
 
-  @Get(':id')
+  @Get(':slug')
   @ApiOperation({
     summary: '게시글 1개를 가져오는 API',
     description: '게시판에 존재하는 게시글 1개를 가져온다.',
@@ -54,8 +54,8 @@ export class BoardController {
     status: 200,
     description: 'A post is successfully gotten.',
   })
-  findOne(@Param('id') id: string) {
-    return this.boardService.findOne(+id);
+  getOne(@Param('slug') slug: string) {
+    return this.postService.getOne(slug);
   }
 
   @ApiOperation({
@@ -66,9 +66,9 @@ export class BoardController {
     status: 204,
     description: 'The post is successfully changed.',
   })
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBoardDto: UpdateBoardDto) {
-    return this.boardService.update(+id, updateBoardDto);
+  @Patch()
+  async update(@Body() updatePostDto: UpdatePostDto) {
+    return this.postService.updateOne(updatePostDto);
   }
 
   @ApiOperation({
@@ -79,9 +79,9 @@ export class BoardController {
     status: 204,
     description: 'The post is successfully deleted.',
   })
-  @Delete(':id')
+  @Delete(':slug')
   @HttpCode(204)
-  remove(@Param('id') id: string) {
-    return this.boardService.remove(+id);
+  remove(@Param('slug') slug: string) {
+    return this.postService.deleteOne(slug);
   }
 }
