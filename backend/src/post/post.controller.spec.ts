@@ -1,12 +1,13 @@
 import { PostController } from './post.controller';
 import { PostService } from './post.service';
 
+// post.controller.spec.ts에 service가 존재하는 이유?
 describe('PostController', () => {
   let postController: PostController;
   let postService: PostService;
 
   beforeEach(async () => {
-    postService = new PostService();
+    postService = new PostService({} as IPostRepository);
     postController = new PostController(postService);
   });
 
@@ -64,10 +65,11 @@ describe('PostController', () => {
     };
     jest
       .spyOn(postService, 'updateOne')
-      .mockImplementation(async (updatePostDto) => {
+      .mockImplementation(async (slug, updatePostDto) => {
+        expect(slug).toBe(input.slug);
         expect(updatePostDto).toBe(input);
       });
-    expect(await postController.update(input)).toBe(undefined);
+    expect(await postController.update(input.slug, input)).toBe(undefined);
   });
 
   it('deleteOne should return void', async () => {

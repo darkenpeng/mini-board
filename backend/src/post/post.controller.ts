@@ -66,9 +66,12 @@ export class PostController {
     status: 204,
     description: 'The post is successfully changed.',
   })
-  @Patch()
-  async update(@Body() updatePostDto: UpdatePostDto) {
-    return this.postService.updateOne(updatePostDto);
+  @Patch(':slug')
+  async update(
+    @Param('slug') slug: string,
+    @Body() updatePostDto: UpdatePostDto,
+  ) {
+    return this.postService.updateOne(slug, updatePostDto);
   }
 
   @ApiOperation({
