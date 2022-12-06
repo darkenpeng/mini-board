@@ -25,7 +25,7 @@ interface IPostRepository {
 }
 
 interface IPostService {
-  create: (newPost: Post) => Promise<void>;
+  create: (createPostDto: CreatePostDto) => Promise<void>;
   getAll: () => Promise<Post[]>;
   getOne: (slug: Post['slug']) => Promise<Post>;
   updateOne: (
