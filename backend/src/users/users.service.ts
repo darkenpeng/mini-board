@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
 
 //async는 나중에 사용할꺼라서 미리 작성해놓음 (없어도 상관x)
 @Injectable()
@@ -21,11 +22,11 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     const createUser = createUserDto;
     this.users.push(createUser);
-    return await this.users;
+    return this.users;
   }
 
-  async findAll() {
-    return await this.users;
+  async findAll(): Promise<User[]> {
+    return this.users;
   }
 
   async findOne(email: string) {
@@ -34,10 +35,10 @@ export class UsersService {
   }
 
   async update(email: string, updateUserDto: UpdateUserDto) {
-    return await `This action updates a #${updateUserDto} user`;
+    return `This action updates a #${updateUserDto} user`;
   }
 
   async remove(email: string) {
-    return await `This action removes a #${email} user`;
+    return `This action removes a #${email} user`;
   }
 }
