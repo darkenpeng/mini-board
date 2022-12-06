@@ -2,25 +2,42 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
+//async는 나중에 사용할꺼라서 미리 작성해놓음 (없어도 상관x)
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  private readonly users = [
+    {
+      email: 'user1@test.com',
+      username: 'user1',
+      password: '1234',
+    },
+    {
+      email: 'user2@test.com',
+      username: 'user2',
+      password: '1234',
+    },
+  ];
+
+  async create(createUserDto: CreateUserDto) {
+    const createUser = createUserDto;
+    this.users.push(createUser);
+    return await this.users;
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    return await this.users;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(email: string) {
+    const user = await this.users.find((user) => user.email === email);
+    return user ? user : 'user not found';
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(email: string, updateUserDto: UpdateUserDto) {
+    return await `This action updates a #${updateUserDto} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(email: string) {
+    return await `This action removes a #${email} user`;
   }
 }
