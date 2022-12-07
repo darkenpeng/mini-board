@@ -8,7 +8,10 @@ import { UsersModule } from 'src/users/users.module';
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
-    JwtModule.register({ secret: 'secret', signOptions: { expiresIn: '1y' } }),
+    JwtModule.register({
+      secret: 'secretKey',
+      signOptions: { expiresIn: '1y' },
+    }),
     UsersModule,
   ],
   controllers: [AuthController],

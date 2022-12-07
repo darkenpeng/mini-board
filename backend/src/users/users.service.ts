@@ -44,7 +44,7 @@ export class UsersService {
 
   async findOne(email: string) {
     const user = await this.users.find((user) => user.email === email);
-    return user ? user : 'user not found';
+    return user;
   }
 
   async update(email: string, updateUserDto: UpdateUserDto) {
