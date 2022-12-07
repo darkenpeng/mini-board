@@ -24,7 +24,7 @@ import { ConfigModule } from '@nestjs/config';
       subscribers: [],
       migrations: [],
     }),
-    UserModule,
+    UsersModule,
     PostModule,
     AuthModule,
   ],
