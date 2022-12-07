@@ -1,21 +1,27 @@
+import { LoginRequestDto } from './dto/login.request.dto';
 import { Controller, Post, Body, Patch } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { RegisterRequestDto } from './dto/register.requset.dto';
+import { UsersService } from 'src/users/users.service';
 
 @ApiTags('auth')
 @Controller()
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Post('register')
   @ApiOperation({ summary: '회원가입', description: '유저를 생성한다.' })
   @ApiResponse({
     status: 201,
-    description: 'The user has been successfully created.',
+    description: 'Post: User Created',
+    type: RegisterRequestDto,
   })
-  async create(@Body() createAuthDto: CreateAuthDto) {
-    this.authService.create(createAuthDto);
+  async register(@Body() registerRequestDto: RegisterRequestDto) {
+    return this.usersService.signUp(registerRequestDto);
   }
 
   @Post('login')
@@ -28,7 +34,7 @@ export class AuthController {
     status: 403,
     description: 'login failed',
   })
-  async login(@Body() createAuthDto: CreateAuthDto) {
-    this.authService.create(createAuthDto);
+  async login(@Body() loginRequestDto: LoginRequestDto) {
+    return this.authService.jwtLogin(loginRequestDto);
   }
 }

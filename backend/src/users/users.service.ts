@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-
+import * as bcrypt from 'bcrypt';
 //async는 나중에 사용할꺼라서 미리 작성해놓음 (없어도 상관x)
+//DB연결하면서 대거 변경 예정
+
 @Injectable()
 export class UsersService {
   private readonly users = [
@@ -19,19 +21,30 @@ export class UsersService {
     },
   ];
 
-  async create(createUserDto: CreateUserDto) {
-    const createUser = createUserDto;
-    this.users.push(createUser);
-    return this.users;
+  async signUp(body: CreateUserDto) {
+    const { email, username, password } = body;
+    const isUserExist = this.users.find((user) => user.email === email);
+    if (isUserExist !== undefined) {
+      throw new UnauthorizedException('해당 이메일은 중복된 이메일입니다');
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = {
+      email,
+      username,
+      password: hashedPassword,
+    };
+    await this.users.push(user);
+    return user;
   }
 
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<any> {
     return this.users;
   }
 
   async findOne(email: string) {
     const user = await this.users.find((user) => user.email === email);
-    return user ? user : 'user not found';
+    return user;
   }
 
   async update(email: string, updateUserDto: UpdateUserDto) {

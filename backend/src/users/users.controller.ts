@@ -1,14 +1,5 @@
-import {
-  Controller,
-  Get,
-  Body,
-  Patch,
-  Post,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 
@@ -48,20 +39,6 @@ export class UsersController {
   })
   async findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
-  }
-
-  @Post()
-  @ApiOperation({
-    summary: '유저를 추가하는 API',
-    description: '요청한 정보로 유저를 추가합니다',
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'Post: User Created',
-    type: CreateUserDto,
-  })
-  async create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
   }
 
   @Patch(':id')
