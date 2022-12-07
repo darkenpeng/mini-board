@@ -50,20 +50,6 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @Post()
-  @ApiOperation({
-    summary: '유저를 추가하는 API',
-    description: '요청한 정보로 유저를 추가합니다',
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'Post: User Created',
-    type: CreateUserDto,
-  })
-  async create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
-
   @Patch(':id')
   @ApiParam({
     name: 'id',
