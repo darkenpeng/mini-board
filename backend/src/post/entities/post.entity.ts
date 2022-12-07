@@ -11,14 +11,11 @@ export class Post {
   @PrimaryColumn()
   slug: string;
 
-  @Column({
-    length: 32, //TODO
-  })
+  @Column()
   title: string;
 
   @Column({
     type: 'text',
-    length: 32648,
   })
   content: string;
   //author: User;
