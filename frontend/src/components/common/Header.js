@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Button from "./Button";
 import { Link } from "react-router-dom";
 import Responsive from "./Responsive";
+
 const HeaderBlock = styled.div`
   position: fixed;
   width: 100%;

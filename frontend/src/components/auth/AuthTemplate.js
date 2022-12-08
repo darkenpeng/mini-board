@@ -6,7 +6,7 @@ const AuthTemplateBlock = styled.div`
   top: 0;
   bottom: 0;
   right: 0;
-  background: rgba(252, 129, 0, 0.07);
+
   display: flex;
   flex-direction: column;
   justify-content: center;

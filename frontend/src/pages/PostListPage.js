@@ -1,9 +1,11 @@
 import Header from "../components/common/Header";
+import PostListContainer from "../containers/posts/PostListContainer";
+import PostList from "../components/posts/PostList";
 const PostListPage = () => {
   return (
     <>
       <Header />
-      <div>안녕하세요</div>
+      <PostListContainer />
     </>
   );
 };
