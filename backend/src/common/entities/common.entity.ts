@@ -6,7 +6,7 @@ import {
 
 export abstract class CommonEntity {
   @PrimaryGeneratedColumn()
-  id: string;
+  _id: string;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -15,7 +15,7 @@ export class AuthService {
     const { email, password } = data;
 
     // check exist email
-    const user = await this.usersService.getOneByEmail(email);
+    const user = await this.usersService.getOneById(email);
     if (!user) {
       throw new UnauthorizedException('찾는 아이디가 없습니다');
     }
@@ -26,8 +26,7 @@ export class AuthService {
     if (!isPasswordValidated) {
       throw new UnauthorizedException('패스워드가 다릅니다');
     }
-    // sub는 나중에 id로 대체
-    const payload = { email: email, sub: 'sub' };
+    const payload = { email: email, sub: user.email };
     return {
       token: this.jwtService.sign(payload),
     };

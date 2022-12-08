@@ -18,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     //usersRepository 생기면 password를 제거해서 받아오는 finduserByIdWithoutPassword 를 만들어야함
     //https://www.inflearn.com/course/%ED%83%84%ED%83%84%ED%95%9C-%EB%B0%B1%EC%97%94%EB%93%9C-%EB%84%A4%EC%8A%A4%ED%8A%B8/unit/83833
 
-    const user = await this.usersService.findOne(payload.email);
+    const user = await this.usersService.getOneById(payload.email);
     if (!user) {
       throw new UnauthorizedException('접근오류');
     }

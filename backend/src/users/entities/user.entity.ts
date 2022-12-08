@@ -2,7 +2,7 @@ import { IsOptional } from 'class-validator';
 import { CommonEntity } from 'src/common/entities/common.entity';
 import { Entity, Column } from 'typeorm';
 
-@Entity({ name: 'user' })
+@Entity({ name: 'USER' })
 export class UserEntity extends CommonEntity {
   @Column({ unique: true })
   email: string;
