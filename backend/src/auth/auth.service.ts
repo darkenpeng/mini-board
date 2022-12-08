@@ -23,7 +23,7 @@ export class AuthService {
       password,
       user.password,
     );
-    if (isPasswordValidated) {
+    if (!isPasswordValidated) {
       throw new UnauthorizedException('패스워드가 다릅니다');
     }
     // sub는 나중에 id로 대체
