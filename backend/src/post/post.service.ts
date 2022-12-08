@@ -22,24 +22,24 @@ export class PostService implements IPostService {
     return this.postRepository.getAll();
   }
 
-  async getOne(slug: Post['slug']) {
-    return this.postRepository.getOne(slug);
+  async getOneBySlug(slug: Post['slug']) {
+    return this.postRepository.getOneBySlug(slug);
   }
 
-  async updateOne(slug: string, updatePostDto: UpdatePostDto) {
+  async updateOneBySlug(slug: string, updatePostDto: UpdatePostDto) {
     const slugifiedTitle = slugify(updatePostDto.title);
     // updateDto.title을 slugify해서 slug를 만들어야 하는지
     // controller에서 slug를 params로 받아서 그걸 getOne(slug) 이렇게 해야하는건지
-    const existedPost = await this.postRepository.getOne(slug);
+    const existedPost = await this.postRepository.getOneBySlug(slug);
     const updatedPost = {
       ...existedPost,
       slug: slugifiedTitle,
       ...updatePostDto,
     };
-    await this.postRepository.updateOne(slug, updatedPost);
+    await this.postRepository.updateOneBySlug(slug, updatedPost);
   }
 
-  async deleteOne(slug: Post['slug']) {
-    await this.postRepository.deleteOne(slug);
+  async deleteOneBySlug(slug: Post['slug']) {
+    await this.postRepository.deleteOneBySlug(slug);
   }
 }

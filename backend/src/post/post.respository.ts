@@ -18,13 +18,13 @@ export class PostTypeOrmRepository implements IPostRepository {
   async getAll() {
     return this.postRepository.find();
   }
-  async getOne(slug: Post['slug']) {
+  async getOneBySlug(slug: Post['slug']) {
     return this.postRepository.findOneBy({ slug });
   }
-  async updateOne(slug: Post['slug'], updatePostDto: UpdatePostDto) {
+  async updateOneBySlug(slug: Post['slug'], updatePostDto: UpdatePostDto) {
     await this.postRepository.update({ slug }, updatePostDto);
   }
-  async deleteOne(slug: Post['slug']) {
+  async deleteOneBySlug(slug: Post['slug']) {
     await this.postRepository.delete({ slug });
   }
 }

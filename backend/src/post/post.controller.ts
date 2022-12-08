@@ -55,7 +55,7 @@ export class PostController {
     description: 'A post is successfully gotten.',
   })
   getOne(@Param('slug') slug: string) {
-    return this.postService.getOne(slug);
+    return this.postService.getOneBySlug(slug);
   }
 
   @ApiOperation({
@@ -71,7 +71,7 @@ export class PostController {
     @Param('slug') slug: string,
     @Body() updatePostDto: UpdatePostDto,
   ) {
-    return this.postService.updateOne(slug, updatePostDto);
+    return this.postService.updateOneBySlug(slug, updatePostDto);
   }
 
   @ApiOperation({
@@ -85,6 +85,6 @@ export class PostController {
   @Delete(':slug')
   @HttpCode(204)
   remove(@Param('slug') slug: string) {
-    return this.postService.deleteOne(slug);
+    return this.postService.deleteOneBySlug(slug);
   }
 }
