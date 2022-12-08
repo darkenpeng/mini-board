@@ -1,3 +1,4 @@
+import { UserEntity } from './users/entities/user.entity';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -20,7 +21,7 @@ import { ConfigModule } from '@nestjs/config';
       database: 'postgres',
       synchronize: true,
       logging: true,
-      entities: [Post],
+      entities: [Post, UserEntity],
     }),
     UsersModule,
     PostModule,

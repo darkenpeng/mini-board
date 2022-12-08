@@ -1,7 +1,7 @@
 import { Controller, Get, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { UpdateUserDto } from './dtos';
 
 @ApiTags('users')
 @Controller('users')
@@ -18,8 +18,8 @@ export class UsersController {
     status: 200,
     description: 'GET: Users are successfully gotten.',
   })
-  async findAll() {
-    return this.usersService.findAll();
+  async getAll() {
+    return this.usersService.getAll();
   }
 
   @Get(':id')
@@ -37,8 +37,8 @@ export class UsersController {
     status: 200,
     description: 'GET: User is successfully gotten.',
   })
-  async findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+  async getOneByEmail(@Param('id') id: string) {
+    return this.usersService.getOneByEmail(id);
   }
 
   @Patch(':id')

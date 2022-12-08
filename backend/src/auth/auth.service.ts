@@ -1,8 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
-import { LoginRequestDto } from './dto/login.request.dto';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { UserLoginDTO } from './dtos/user-login.dto';
 
 @Injectable()
 export class AuthService {
@@ -11,11 +11,11 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async jwtLogin(data: LoginRequestDto) {
+  async jwtLogin(data: UserLoginDTO) {
     const { email, password } = data;
 
     // check exist email
-    const user = await this.usersService.findOne(email);
+    const user = await this.usersService.getOneByEmail(email);
     if (!user) {
       throw new UnauthorizedException('찾는 아이디가 없습니다');
     }
