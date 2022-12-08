@@ -54,7 +54,9 @@ describe('PostController', () => {
       updatedAt: new Date(),
     };
 
-    jest.spyOn(postService, 'getOne').mockImplementation(async () => expected);
+    jest
+      .spyOn(postService, 'getOneBySlug')
+      .mockImplementation(async () => expected);
     expect(await postController.getOne(expected.slug)).toBe(expected);
   });
   it('updateOne : should return void', async () => {
@@ -64,7 +66,7 @@ describe('PostController', () => {
       slug: 'test-title',
     };
     jest
-      .spyOn(postService, 'updateOne')
+      .spyOn(postService, 'updateOneBySlug')
       .mockImplementation(async (slug, updatePostDto) => {
         expect(slug).toBe(input.slug);
         expect(updatePostDto).toBe(input);
@@ -75,9 +77,11 @@ describe('PostController', () => {
   it('deleteOne should return void', async () => {
     const input = 'test-slug';
 
-    jest.spyOn(postService, 'deleteOne').mockImplementation(async (slug) => {
-      expect(slug).toBe(input);
-    });
+    jest
+      .spyOn(postService, 'deleteOneBySlug')
+      .mockImplementation(async (slug) => {
+        expect(slug).toBe(input);
+      });
     expect(await postController.remove(input)).toBe(undefined);
   });
 });

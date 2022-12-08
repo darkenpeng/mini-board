@@ -24,13 +24,13 @@ describe('PostService', () => {
       async getAll() {
         return this._state;
       },
-      async getOne(
+      async getOneBySlug(
         this: { _state: Post[] }, // 매개변수가 아니라 this에 타입을 달아준 것임
         slug: Post['slug'],
       ) {
         return this._state.find((post) => post.slug === slug);
       },
-      async updateOne(
+      async updateOneBySlug(
         this: { _state: Post[] }, // 매개변수가 아니라 this에 타입을 달아준 것임
         slug: Post['slug'],
         updatePostDto: Omit<Post, 'createdAt' | 'updatedAt'>,
@@ -44,7 +44,7 @@ describe('PostService', () => {
           updatedAt: new Date(),
         };
       },
-      async deleteOne(
+      async deleteOneBySlug(
         this: { _state: Post[] }, // 매개변수가 아니라 this에 타입을 달아준 것임
         slug: Post['slug'],
       ) {
@@ -80,16 +80,16 @@ describe('PostService', () => {
       title: '수정된 제목',
       content: '수정된 내용',
     };
-    await service.updateOne('테스트-제목', updateDto);
+    await service.updateOneBySlug('테스트-제목', updateDto);
 
-    // getOne UpdatedPost
-    const updated = await service.getOne('수정된-제목');
+    // getOneByslug UpdatedPost
+    const updated = await service.getOneBySlug('수정된-제목');
     expect(updated.title).toBe(updateDto.title);
     expect(updated.content).toBe(updateDto.content);
     expect(updated.slug).toBe('수정된-제목');
 
     // delete
-    await service.deleteOne('수정된-제목');
+    await service.deleteOneBySlug('수정된-제목');
 
     // getAll []
     expect(await service.getAll()).toStrictEqual([]);
