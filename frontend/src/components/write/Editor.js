@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Responsive from "../common/Responsive";
 import Quill from "quill";
 import "quill/dist/quill.bubble.css";
-import WriteActionButtons from "./WriteActionButtons";
+
 const EditorBlock = styled(Responsive)`
   margin-top: 5rem;
   padding-top: 5rem;
@@ -37,7 +37,7 @@ const QuillWrapper = styled.div`
   }
 `;
 
-const Editor = () => {
+const Editor = ({ title, content, onChangeField }) => {
   const quillElement = useRef(null);
   const quillInstance = useRef(null);
 
@@ -54,15 +54,27 @@ const Editor = () => {
         ],
       },
     });
-  }, []);
+
+    const quill = quillInstance.current;
+    quill.on("text-change", (delta, oldDelta, source) => {
+      onChangeField({ key: "content", value: quill.root.innerHTML });
+    });
+  }, [onChangeField]);
+
+  const onChangeTitle = (e) => {
+    onChangeField({ key: "title", value: e.target.value });
+  };
 
   return (
     <EditorBlock>
-      <TitleInput placeholder="제목을 입력하세요" />
+      <TitleInput
+        placeholder="제목을 입력하세요"
+        onChange={onChangeTitle}
+        value={title}
+      />
       <QuillWrapper>
         <div ref={quillElement} />
       </QuillWrapper>
-      <WriteActionButtons />
     </EditorBlock>
   );
 };
