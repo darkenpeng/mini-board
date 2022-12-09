@@ -1,8 +1,9 @@
 import { UsersService } from 'src/users/users.service';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UserLoginDTO } from './dtos/user-login.dto';
+import { UserPasswordNotValidException } from 'src/common/exceptions/user-password-not-valid.exception';
 
 @Injectable()
 export class AuthService {
@@ -15,16 +16,13 @@ export class AuthService {
     const { email, password } = data;
 
     // check exist email
-    const user = await this.usersService.getOneById(email);
-    if (!user) {
-      throw new UnauthorizedException('찾는 아이디가 없습니다');
-    }
+    const user = await this.usersService.getOneByEmail(email);
     const isPasswordValidated: boolean = await bcrypt.compare(
       password,
       user.password,
     );
     if (!isPasswordValidated) {
-      throw new UnauthorizedException('패스워드가 다릅니다');
+      throw new UserPasswordNotValidException();
     }
     const payload = { email: email, sub: user.email };
     return {
