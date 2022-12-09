@@ -1,8 +1,9 @@
 import { UsersService } from 'src/users/users.service';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UserLoginDTO } from './dtos/user-login.dto';
+import { UserPasswordNotValidException } from 'src/common/exceptions/user-password-not-valid.exception';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +22,7 @@ export class AuthService {
       user.password,
     );
     if (!isPasswordValidated) {
-      throw new UnauthorizedException('패스워드가 다릅니다');
+      throw new UserPasswordNotValidException();
     }
     const payload = { email: email, sub: user.email };
     return {
