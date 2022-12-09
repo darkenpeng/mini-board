@@ -45,7 +45,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getCurrentUser(@CurrentUser() user: UserEntity): Promise<UserDto> {
-    const userEntity = await this.usersService.getOneById(user.email);
+    const userEntity = await this.usersService.getOneByEmail(user.email);
     return userEntity;
   }
 
@@ -65,7 +65,7 @@ export class UsersController {
     description: 'GET: User is successfully gotten.',
   })
   async getOneById(@Param('id') id: string) {
-    return this.usersService.getOneById(id);
+    return this.usersService.getOneByEmail(id);
   }
 
   @Patch('me')
@@ -83,7 +83,7 @@ export class UsersController {
     @CurrentUser() user: UserEntity,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    await this.usersService.updateById(user.email, updateUserDto);
+    await this.usersService.updateByEmail(user.email, updateUserDto);
   }
 
   @ApiOperation({
@@ -97,7 +97,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Delete('me')
   async deleteCurrentUser(@CurrentUser() user: UserEntity) {
-    return await this.usersService.deleteById(user.email);
+    return await this.usersService.deleteByEmail(user.email);
   }
 
   @Patch(':id')
@@ -116,7 +116,7 @@ export class UsersController {
     type: UpdateUserDto,
   })
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.updateById(id, updateUserDto);
+    return this.usersService.updateByEmail(id, updateUserDto);
   }
 
   @Delete(':id')
@@ -134,6 +134,6 @@ export class UsersController {
     description: 'Delete: User is successfully gotten.',
   })
   async remove(@Param('id') id: string) {
-    return this.usersService.deleteById(id);
+    return this.usersService.deleteByEmail(id);
   }
 }

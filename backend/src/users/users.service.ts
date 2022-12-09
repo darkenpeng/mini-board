@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dtos';
 import { UserDto } from './dtos/user.dto';
 import { UserTypeOrmRepository } from './users.repository';
 import { UserRegisterDto } from 'src/auth/dtos/user-register.dto';
+import { UserNotFoundException } from 'src/common/exceptions/user-not-found.exception.ts';
 
 @Injectable()
 export class UsersService {
@@ -13,19 +14,13 @@ export class UsersService {
   ) {}
 
   async createUser(userRegisterDto: UserRegisterDto): Promise<UserDto> {
-    const { email, username, password } = userRegisterDto;
-    console.log(email);
-    const isUserExist = await this.userRepository.getOneByEmail(email);
-    console.log(isUserExist, 'isUserExist');
-    if (isUserExist) {
-      throw new UnauthorizedException('해당 이메일은 중복된 이메일입니다');
-    }
-
+    const { email, password } = userRegisterDto;
+    const user = await this.getOneByEmail(email);
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUserDto = {
-      email,
-      username,
+      email: user.email,
+      username: user.username,
       password: hashedPassword,
     };
     const newUser = await this.userRepository.create(newUserDto);
@@ -36,29 +31,25 @@ export class UsersService {
     return await this.userRepository.getAll();
   }
 
-  async getOneById(id: string): Promise<UserDto> {
-    const user = await this.userRepository.getOneByEmail(id);
-
+  async getOneByEmail(email: string): Promise<UserDto> {
+    const user = await this.userRepository.getOneByEmail(email);
     if (!user) {
-      throw new UnauthorizedException('해당 유저가 없습니다');
+      throw new UserNotFoundException();
     }
     return user;
   }
 
-  async updateById(id: string, updateUserDto: UpdateUserDto): Promise<void> {
-    const user = await this.userRepository.getOneByEmail(id);
-    if (!user) {
-      throw new UnauthorizedException('해당 유저가 없습니다');
-    }
-    await this.userRepository.updateOneByEmail(id, updateUserDto);
+  async updateByEmail(
+    email: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<void> {
+    const user = await this.getOneByEmail(email);
+    await this.userRepository.updateOneByEmail(user.email, updateUserDto);
   }
 
-  async deleteById(id: string) {
-    const user = await this.userRepository.getOneByEmail(id);
-    if (!user) {
-      throw new UnauthorizedException('해당 유저가 없습니다');
-    }
-    await this.userRepository.deleteByEmail(id);
+  async deleteByEmail(email: string) {
+    const user = await this.getOneByEmail(email);
+    await this.userRepository.deleteByEmail(user.email);
     return user;
   }
 }

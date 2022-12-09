@@ -15,10 +15,7 @@ export class AuthService {
     const { email, password } = data;
 
     // check exist email
-    const user = await this.usersService.getOneById(email);
-    if (!user) {
-      throw new UnauthorizedException('찾는 아이디가 없습니다');
-    }
+    const user = await this.usersService.getOneByEmail(email);
     const isPasswordValidated: boolean = await bcrypt.compare(
       password,
       user.password,
