@@ -1,16 +1,16 @@
-import { LoginRequestDto } from './dto/login.request.dto';
-import { Controller, Post, Body, Patch } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { RegisterRequestDto } from './dto/register.requset.dto';
 import { UsersService } from 'src/users/users.service';
+import { UserRegisterDto } from './dtos/user-register.dto';
+import { UserLoginDTO } from './dtos/user-login.dto';
 
 @ApiTags('auth')
 @Controller()
 export class AuthController {
   constructor(
-    private readonly authService: AuthService,
     private readonly usersService: UsersService,
+    private readonly authService: AuthService,
   ) {}
 
   @Post('register')
@@ -18,10 +18,10 @@ export class AuthController {
   @ApiResponse({
     status: 201,
     description: 'Post: User Created',
-    type: RegisterRequestDto,
+    type: UserRegisterDto,
   })
-  async register(@Body() registerRequestDto: RegisterRequestDto) {
-    return this.usersService.signUp(registerRequestDto);
+  async register(@Body() registerRequestDto: UserRegisterDto) {
+    return this.usersService.createUser(registerRequestDto);
   }
 
   @Post('login')
@@ -34,7 +34,7 @@ export class AuthController {
     status: 403,
     description: 'login failed',
   })
-  async login(@Body() loginRequestDto: LoginRequestDto) {
+  async login(@Body() loginRequestDto: UserLoginDTO) {
     return this.authService.jwtLogin(loginRequestDto);
   }
 }

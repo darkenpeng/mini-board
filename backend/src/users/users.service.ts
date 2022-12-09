@@ -1,57 +1,64 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-//async는 나중에 사용할꺼라서 미리 작성해놓음 (없어도 상관x)
-//DB연결하면서 대거 변경 예정
+import { UpdateUserDto } from './dtos';
+import { UserDto } from './dtos/user.dto';
+import { UserTypeOrmRepository } from './users.repository';
+import { UserRegisterDto } from 'src/auth/dtos/user-register.dto';
 
 @Injectable()
 export class UsersService {
-  private readonly users = [
-    {
-      email: 'user1@test.com',
-      username: 'user1',
-      password: '1234',
-    },
-    {
-      email: 'user2@test.com',
-      username: 'user2',
-      password: '1234',
-    },
-  ];
+  constructor(
+    @Inject('USERS_REPOSITORY')
+    private readonly userRepository: UserTypeOrmRepository,
+  ) {}
 
-  async signUp(body: CreateUserDto) {
-    const { email, username, password } = body;
-    const isUserExist = this.users.find((user) => user.email === email);
-    if (isUserExist !== undefined) {
+  async createUser(userRegisterDto: UserRegisterDto): Promise<UserDto> {
+    const { email, username, password } = userRegisterDto;
+    console.log(email);
+    const isUserExist = await this.userRepository.getOneByEmail(email);
+    console.log(isUserExist, 'isUserExist');
+    if (isUserExist) {
       throw new UnauthorizedException('해당 이메일은 중복된 이메일입니다');
     }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = {
+    const newUserDto = {
       email,
       username,
       password: hashedPassword,
     };
-    await this.users.push(user);
+    const newUser = await this.userRepository.create(newUserDto);
+    return newUser;
+  }
+
+  async getAll(): Promise<UserDto[]> {
+    return await this.userRepository.getAll();
+  }
+
+  async getOneById(id: string): Promise<UserDto> {
+    const user = await this.userRepository.getOneByEmail(id);
+
+    if (!user) {
+      throw new UnauthorizedException('해당 유저가 없습니다');
+    }
     return user;
   }
 
-  async findAll(): Promise<any> {
-    return this.users;
+  async updateById(id: string, updateUserDto: UpdateUserDto): Promise<void> {
+    const user = await this.userRepository.getOneByEmail(id);
+    if (!user) {
+      throw new UnauthorizedException('해당 유저가 없습니다');
+    }
+    await this.userRepository.updateOneByEmail(id, updateUserDto);
   }
 
-  async findOne(email: string) {
-    const user = await this.users.find((user) => user.email === email);
+  async deleteById(id: string) {
+    const user = await this.userRepository.getOneByEmail(id);
+    if (!user) {
+      throw new UnauthorizedException('해당 유저가 없습니다');
+    }
+    await this.userRepository.deleteByEmail(id);
     return user;
-  }
-
-  async update(email: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${updateUserDto} user`;
-  }
-
-  async remove(email: string) {
-    return `This action removes a #${email} user`;
   }
 }

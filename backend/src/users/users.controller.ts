@@ -1,3 +1,6 @@
+import { CurrentUser } from './../common/decorators/user.decorator';
+import { UserDto } from './dtos/user.dto';
+import { UserEntity } from './entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import {
   Controller,
@@ -7,12 +10,10 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
-import { Request } from 'express';
+import { UpdateUserDto } from './dtos';
 
 @ApiTags('users')
 @Controller('users')
@@ -29,8 +30,8 @@ export class UsersController {
     status: 200,
     description: 'GET: Users are successfully gotten.',
   })
-  async findAll() {
-    return this.usersService.findAll();
+  async getAll(): Promise<UserDto[]> {
+    return await this.usersService.getAll();
   }
 
   @ApiOperation({
@@ -42,9 +43,10 @@ export class UsersController {
     description: 'GET: Users are successfully gotten.',
   })
   @UseGuards(JwtAuthGuard)
-  @Get('/me')
-  async getCurrentUser(@Req() req: Request) {
-    return req.user;
+  @Get('me')
+  async getCurrentUser(@CurrentUser() user: UserEntity): Promise<UserDto> {
+    const userEntity = await this.usersService.getOneById(user.email);
+    return userEntity;
   }
 
   @Get(':id')
@@ -62,8 +64,40 @@ export class UsersController {
     status: 200,
     description: 'GET: User is successfully gotten.',
   })
-  async findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+  async getOneById(@Param('id') id: string) {
+    return this.usersService.getOneById(id);
+  }
+
+  @Patch('me')
+  @ApiOperation({
+    summary: '현재 유저의 정보를 수정하는 API',
+    description: '현재 사용자의 정보를 수정합니다.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Patch: User is successfully gotten.',
+    type: UpdateUserDto,
+  })
+  @UseGuards(JwtAuthGuard)
+  async updateCurrentUser(
+    @CurrentUser() user: UserEntity,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    await this.usersService.updateById(user.email, updateUserDto);
+  }
+
+  @ApiOperation({
+    summary: '현재 유저의 정보를 삭제하는 API',
+    description: '현재 사용자의 정보를 수정합니다.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Patch: User is successfully gotten.',
+  })
+  @UseGuards(JwtAuthGuard)
+  @Delete('me')
+  async deleteCurrentUser(@CurrentUser() user: UserEntity) {
+    return await this.usersService.deleteById(user.email);
   }
 
   @Patch(':id')
@@ -82,7 +116,7 @@ export class UsersController {
     type: UpdateUserDto,
   })
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+    return this.usersService.updateById(id, updateUserDto);
   }
 
   @Delete(':id')
@@ -100,6 +134,6 @@ export class UsersController {
     description: 'Delete: User is successfully gotten.',
   })
   async remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+    return this.usersService.deleteById(id);
   }
 }
